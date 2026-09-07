@@ -1,0 +1,417 @@
+{% extends 'queue_system/base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Additional styles for the enhanced index page */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1%, transparent 1%);
+            background-size: 50px 50px;
+            animation: shimmer 20s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card-enhanced {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .stat-card-enhanced:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number-enhanced {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            height: 100%;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .testimonial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 1rem;
+            text-align: center;
+        }
+        
+        .testimonial-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+        }
+        
+        .btn-cta {
+            background: white;
+            color: #667eea;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            color: #764ba2;
+        }
+        
+        .department-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f8f9fa;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin: 0.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .service-card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section fade-in">
+        <div class="container">
+            <h1 class="hero-title">
+                <i class="fas fa-hospital-user"></i> Welcome to Smart Hospital
+            </h1>
+            <p class="hero-subtitle">
+                Experience the future of healthcare with our AI-powered queue management system
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="{% url 'get_token' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-qrcode"></i> Get Token Now
+                </a>
+                <a href="{% url 'queue_status' %}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-chart-line"></i> Live Queue
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Statistics Dashboard -->
+        <div class="stat-grid">
+            <div class="stat-card-enhanced">
+                <div class="stat-number-enhanced">{{ total_waiting }}</div>
+                <div class="stat-label">Patients Waiting</div>
+                <small class="text-muted">Currently in queue</small>
+            </div>
+            <div class="stat-card-enhanced">
+                <div class="stat-number-enhanced">{{ in_progress }}</div>
+                <div class="stat-label">In Consultation</div>
+                <small class="text-muted">Being attended now</small>
+            </div>
+            <div class="stat-card-enhanced">
+                <div class="stat-number-enhanced">{{ today_tokens }}</div>
+                <div class="stat-label">Today's Patients</div>
+                <small class="text-muted">Served today</small>
+            </div>
+            <div class="stat-card-enhanced">
+                <div class="stat-number-enhanced">
+                    {% if total_waiting > 0 %}
+                        {{ total_waiting|floatformat:0 }} min
+                    {% else %}
+                        0 min
+                    {% endif %}
+                </div>
+                <div class="stat-label">Avg Wait Time</div>
+                <small class="text-muted">AI predicted</small>
+            </div>
+        </div>
+        
+        <!-- Main Services Row -->
+        <div class="row" style="margin-bottom: 3rem;">
+            <div class="col-6">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3>Digital Token System</h3>
+                    <p>Get your queue token instantly without any physical contact. Our digital system ensures safety and convenience.</p>
+                    <ul class="feature-list" style="text-align: left; margin-top: 1.5rem;">
+                        <li><i class="fas fa-check-circle" style="color: #28a745;"></i> Instant token generation</li>
+                        <li><i class="fas fa-check-circle" style="color: #28a745;"></i> QR code for easy scanning</li>
+                        <li><i class="fas fa-check-circle" style="color: #28a745;"></i> No physical contact required</li>
+                        <li><i class="fas fa-check-circle" style="color: #28a745;"></i> Access from anywhere</li>
+                    </ul>
+                    <a href="{% url 'get_token' %}" class="btn btn-primary" style="margin-top: 1.5rem;">
+                        Get Your Token <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Smart Predictions</h3>
+                    <p>Our advanced AI algorithms predict wait times with high accuracy based on historical and real-time data.</p>
+                    <ul class="feature-list" style="text-align: left; margin-top: 1.5rem;">
+                        <li><i class="fas fa-chart-line" style="color: #667eea;"></i> 95% prediction accuracy</li>
+                        <li><i class="fas fa-chart-line" style="color: #667eea;"></i> Real-time adjustments</li>
+                        <li><i class="fas fa-chart-line" style="color: #667eea;"></i> Peak hour optimization</li>
+                        <li><i class="fas fa-chart-line" style="color: #667eea;"></i> Resource allocation</li>
+                    </ul>
+                    <a href="{% url 'queue_status' %}" class="btn btn-success" style="margin-top: 1.5rem;">
+                        View Live Queue <i class="fas fa-chart-line"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <h2 class="text-center" style="margin-bottom: 2rem;">Why Choose Smart Hospital?</h2>
+        <div class="row" style="margin-bottom: 3rem;">
+            <div class="col-4">
+                <div class="service-card">
+                    <div class="service-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h4>SMS Notifications</h4>
+                    <p>Receive instant SMS alerts when it's your turn. Never miss your appointment.</p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="service-card">
+                    <div class="service-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-chart-simple"></i>
+                    </div>
+                    <h4>Live Analytics</h4>
+                    <p>Real-time queue statistics and performance metrics for better management.</p>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="service-card">
+                    <div class="service-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Secure & Private</h4>
+                    <p>Your data is encrypted and protected with industry-standard security.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Departments Section -->
+        <div class="card" style="margin-bottom: 3rem;">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-building"></i> Our Departments</h3>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                    {% for dept in departments %}
+                    <div class="department-badge">
+                        <i class="fas fa-hospital"></i>
+                        <strong>{{ dept.name }}</strong>
+                        <span class="badge badge-info">{{ dept.average_consultation_time }} min</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Testimonials Section -->
+        <h2 class="text-center" style="margin-bottom: 2rem;">What Our Patients Say</h2>
+        <div class="row" style="margin-bottom: 3rem;">
+            <div class="col-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <p>"The digital token system saved me so much time! I could wait at the cafe and got an SMS when it was my turn."</p>
+                    <strong>- Sarah Johnson</strong>
+                    <div><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i></div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <p>"Amazing system! The AI wait time predictions were very accurate. Highly recommend this hospital."</p>
+                    <strong>- Michael Chen</strong>
+                    <div><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i></div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <p>"I love how I can check the queue status from my phone. Very convenient and well-organized system."</p>
+                    <strong>- Priya Sharma</strong>
+                    <div><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i><i class="fas fa-star" style="color: #ffc107;"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2 style="font-size: 2rem; margin-bottom: 1rem;">Ready for a Better Healthcare Experience?</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.95;">Join thousands of satisfied patients who trust our smart queue system</p>
+            <a href="{% url 'get_token' %}" class="btn-cta">
+                Get Your Digital Token Now <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <!-- Trust Indicators -->
+        <div class="row" style="margin-top: 3rem; text-align: center;">
+            <div class="col-3">
+                <i class="fas fa-clock" style="font-size: 2rem; color: #667eea;"></i>
+                <h5>24/7 Available</h5>
+                <small class="text-muted">Always ready to serve</small>
+            </div>
+            <div class="col-3">
+                <i class="fas fa-user-md" style="font-size: 2rem; color: #667eea;"></i>
+                <h5>Expert Doctors</h5>
+                <small class="text-muted">Best in class</small>
+            </div>
+            <div class="col-3">
+                <i class="fas fa-chart-line" style="font-size: 2rem; color: #667eea;"></i>
+                <h5>Reduced Wait</h5>
+                <small class="text-muted">Up to 50% less waiting</small>
+            </div>
+            <div class="col-3">
+                <i class="fas fa-smile" style="font-size: 2rem; color: #667eea;"></i>
+                <h5>98% Satisfied</h5>
+                <small class="text-muted">Patient approved</small>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

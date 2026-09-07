@@ -1,0 +1,50 @@
+{% extends 'queue_system/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white text-center">
+                <h2>Your Digital Token</h2>
+            </div>
+            <div class="card-body text-center">
+                <h1 style="font-size: 3em; font-family: monospace;">{{ token.token_number }}</h1>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <strong>Position:</strong> {{ position }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-warning">
+                            <strong>Est. Wait:</strong> {{ token.predicted_wait_time }} minutes
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-start mt-4">
+                    <p><strong>Department:</strong> {{ token.department.name }}</p>
+                    <p><strong>Patient Name:</strong> {{ token.patient_name }}</p>
+                    <p><strong>Phone:</strong> {{ token.patient_phone }}</p>
+                    <p><strong>Priority:</strong> {{ token.get_priority_display }}</p>
+                    <p><strong>Status:</strong> {{ token.get_status_display }}</p>
+                    <p><strong>Created:</strong> {{ token.created_at|date:"Y-m-d H:i:s" }}</p>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{% url 'index' %}" class="btn btn-primary">Back to Home</a>
+                    <button onclick="window.print()" class="btn btn-secondary">Print Ticket</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple auto-refresh every 30 seconds
+    setTimeout(function() {
+        location.reload();
+    }, 30000);
+</script>
+{% endblock %}

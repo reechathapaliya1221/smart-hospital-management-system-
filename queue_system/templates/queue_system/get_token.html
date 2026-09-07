@@ -1,0 +1,153 @@
+{% extends 'queue_system/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Hero Section -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-white">
+                    <i class="fas fa-qrcode"></i> Get Your Digital Token
+                </h1>
+                <p class="lead text-white-50">Quick, easy, and contactless token generation</p>
+            </div>
+            
+            <!-- Token Form Card -->
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-plus"></i> Patient Information
+                    </h3>
+                </div>
+                <div class="card-body-modern">
+                    <form method="post" id="tokenForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-user-circle"></i> Full Name *
+                                </label>
+                                <input type="text" name="patient_name" class="form-control form-control-modern" 
+                                       placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-phone-alt"></i> Phone Number *
+                                </label>
+                                <input type="tel" name="patient_phone" class="form-control form-control-modern" 
+                                       placeholder="e.g., 9876543210" required>
+                                <small class="text-muted">You'll receive SMS updates</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-envelope"></i> Email (Optional)
+                                </label>
+                                <input type="email" name="patient_email" class="form-control form-control-modern" 
+                                       placeholder="your@email.com">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-building"></i> Department *
+                                </label>
+                                <select name="department" class="form-select form-control-modern" required>
+                                    <option value="">Select Department</option>
+                                    {% for dept in departments %}
+                                    <option value="{{ dept.id }}">
+                                        {{ dept.name }} 
+                                        <small>(~{{ dept.average_consultation_time }} min wait)</small>
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-flag-checkered"></i> Priority Level
+                            </label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="priority" value="normal" id="normal" checked>
+                                        <label class="form-check-label" for="normal">
+                                            <span class="badge bg-secondary">🟢 Normal</span>
+                                            <small class="d-block text-muted">Standard queue</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="priority" value="urgent" id="urgent">
+                                        <label class="form-check-label" for="urgent">
+                                            <span class="badge bg-warning">🟡 Urgent</span>
+                                            <small class="d-block text-muted">Priority queue</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="priority" value="emergency" id="emergency">
+                                        <label class="form-check-label" for="emergency">
+                                            <span class="badge bg-danger">🔴 Emergency</span>
+                                            <small class="d-block text-muted">Immediate attention</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info alert-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Estimated wait time</strong> is calculated using AI based on current queue and historical data.
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary-modern btn-modern w-100">
+                            <i class="fas fa-ticket-alt"></i> Generate Token
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Info Cards -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-clock stat-icon" style="color: var(--primary);"></i>
+                        <div class="stat-number">AI-Powered</div>
+                        <div class="stat-label">Smart predictions</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-mobile-alt stat-icon" style="color: var(--success);"></i>
+                        <div class="stat-number">SMS Alerts</div>
+                        <div class="stat-label">Real-time updates</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-shield-alt stat-icon" style="color: var(--warning);"></i>
+                        <div class="stat-number">Secure</div>
+                        <div class="stat-label">Data protected</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add animation to form submission
+    document.getElementById('tokenForm').addEventListener('submit', function() {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Token...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}

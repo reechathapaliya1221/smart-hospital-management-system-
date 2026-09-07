@@ -1,0 +1,71 @@
+{% extends 'queue_system/base.html' %}
+
+{% block content %}
+<div class="fade-in">
+    <h2 class="display-4" style="font-size: 2rem;">Live Queue Status</h2>
+    <p>Real-time updates every 30 seconds</p>
+    
+    {% for dept_data in departments %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">{{ dept_data.department.name }}</h3>
+        </div>
+        <div class="card-body">
+            <!-- Currently Serving -->
+            <div class="alert alert-info">
+                <i class="fas fa-stethoscope"></i>
+                <strong>Currently Serving:</strong>
+                {% if dept_data.in_progress %}
+                    Token {{ dept_data.in_progress.token_number }} - {{ dept_data.in_progress.patient_name }}
+                {% else %}
+                    No one currently
+                {% endif %}
+            </div>
+            
+            <!-- Queue Table -->
+            {% if dept_data.queue %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Token</th>
+                            <th>Patient</th>
+                            <th>Priority</th>
+                            <th>Est. Wait</th>
+                        </thead>
+                        <tbody>
+                            {% for item in dept_data.queue %}
+                            <tr>
+                                <td><span class="badge badge-primary">{{ item.position }}</span></td>
+                                <td><strong>{{ item.token.token_number }}</strong></td>
+                                <td>{{ item.token.patient_name }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if item.token.priority == 'emergency' %}badge-danger
+                                        {% elif item.token.priority == 'urgent' %}badge-warning
+                                        {% else %}badge-info{% endif %}">
+                                        {{ item.token.get_priority_display }}
+                                    </span>
+                                </td>
+                                <td>{{ item.estimated_wait }} minutes</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center" style="padding: 2rem;">
+                    <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success);"></i>
+                    <p style="margin-top: 1rem;">No patients waiting in this department</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        
+        <script>
+            // Auto-refresh every 30 seconds
+            setTimeout(() => location.reload(), 30000);
+        </script>
+        {% endblock %}
