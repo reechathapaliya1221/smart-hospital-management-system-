@@ -37,10 +37,3 @@ An AI-powered hospital queue management system with SMS notifications and mobile
 - Twilio (SMS)
 - GitHub Actions (CI/CD)
 
-## 📦 Installation
-
-### 1. Clone Repository
-
-```bash
-git clone https://github.com/yourusername/smart-hospital-queue.git
-cd smart-hospital-queue
