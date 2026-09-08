@@ -4,12 +4,11 @@ An AI-powered hospital queue management system with SMS notifications and mobile
 
 ## 📋 Features
 
-- ✅ Digital token generation with QR codes
+- ✅ Digital token generation 
 - 🤖 AI-powered wait time predictions
 - 📱 SMS notifications via Twilio
 - 📊 Live queue tracking
 - 👨‍⚕️ Admin dashboard
-- 📱 Flutter mobile app
 - 🔔 Priority system (Emergency/Urgent/Normal)
 - 📈 Queue analytics
 
@@ -27,13 +26,3 @@ An AI-powered hospital queue management system with SMS notifications and mobile
 - HTML5 / CSS3 / JavaScript
 - Bootstrap 5
 - Chart.js
-
-**Mobile:**
-- Flutter
-- Dart
-- Provider (state management)
-
-**Services:**
-- Twilio (SMS)
-- GitHub Actions (CI/CD)
-
