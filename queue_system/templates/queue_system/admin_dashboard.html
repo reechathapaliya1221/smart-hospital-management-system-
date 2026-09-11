@@ -1,39 +1,40 @@
 {% extends 'queue_system/base.html' %}
+{% load static %}
 
 {% block content %}
-<h2>Admin Dashboard</h2>
+<h2 class="mb-4">Admin Dashboard</h2>
 
 <!-- Statistics Cards -->
-<div class="row mb-4">
+<div class="row mb-4" aria-live="polite">
     <div class="col-md-3">
         <div class="card text-white bg-primary">
             <div class="card-body">
-                <h5>Today's Tokens</h5>
-                <h2>{{ stats.total_today }}</h2>
+                <h5 class="card-title">Today's Tokens</h5>
+                <p class="card-text fs-2 mb-0">{{ stats.total_today }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card text-white bg-success">
             <div class="card-body">
-                <h5>Completed</h5>
-                <h2>{{ stats.completed_today }}</h2>
+                <h5 class="card-title">Completed</h5>
+                <p class="card-text fs-2 mb-0">{{ stats.completed_today }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card text-white bg-warning">
             <div class="card-body">
-                <h5>Waiting</h5>
-                <h2>{{ stats.waiting_now }}</h2>
+                <h5 class="card-title">Waiting</h5>
+                <p class="card-text fs-2 mb-0">{{ stats.waiting_now }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card text-white bg-info">
             <div class="card-body">
-                <h5>In Progress</h5>
-                <h2>{{ stats.in_progress_now }}</h2>
+                <h5 class="card-title">In Progress</h5>
+                <p class="card-text fs-2 mb-0">{{ stats.in_progress_now }}</p>
             </div>
         </div>
     </div>
@@ -42,14 +43,15 @@
 <!-- Call Next Patient Form -->
 <div class="card mb-4">
     <div class="card-header bg-dark text-white">
-        <h4>Call Next Patient</h4>
+        <h4 class="mb-0">Call Next Patient</h4>
     </div>
     <div class="card-body">
-        <form method="post" class="row">
+        <form method="post" class="row g-2 align-items-center">
             {% csrf_token %}
             <div class="col-md-6">
-                <select name="department_id" class="form-control" required>
-                    <option value="">Select Department</option>
+                <label for="department_id" class="visually-hidden">Department</label>
+                <select id="department_id" name="department_id" class="form-select" required>
+                    <option value="" disabled selected>Select Department</option>
                     {% for dept in departments %}
                     <option value="{{ dept.id }}">
                         {{ dept.name }} ({{ dept.get_waiting_count }} waiting)
@@ -59,7 +61,7 @@
             </div>
             <div class="col-md-6">
                 <button type="submit" name="action" value="call_next" class="btn btn-primary w-100">
-                    <i class="fas fa-bell"></i> Call Next Patient
+                    <i class="fas fa-bell" aria-hidden="true"></i> Call Next Patient
                 </button>
             </div>
         </form>
@@ -68,33 +70,35 @@
 
 <!-- Current Queue Table -->
 <div class="card">
-    <div class="card-header bg-dark text-white">
-        <h4>Current Queue</h4>
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Current Queue</h4>
+        <span class="badge bg-light text-dark">{{ tokens|length }} active</span>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover align-middle">
+                <caption class="visually-hidden">List of currently active patient tokens</caption>
                 <thead>
                     <tr>
-                        <th>Token</th>
-                        <th>Patient</th>
-                        <th>Phone</th>
-                        <th>Department</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Wait Time</th>
-                        <th>Actions</th>
+                        <th scope="col">Token</th>
+                        <th scope="col">Patient</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Wait Time</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for token in tokens %}
                     <tr>
-                        <td><strong>{{ token.token_number }}</strong></td>
+                        <th scope="row">{{ token.token_number }}</th>
                         <td>{{ token.patient_name }}</td>
                         <td>{{ token.patient_phone }}</td>
                         <td>{{ token.department.name }}</td>
                         <td>
-                            <span class="badge 
+                            <span class="badge
                                 {% if token.priority == 'emergency' %}bg-danger
                                 {% elif token.priority == 'urgent' %}bg-warning
                                 {% else %}bg-secondary{% endif %}">
@@ -102,7 +106,7 @@
                             </span>
                         </td>
                         <td>
-                            <span class="badge 
+                            <span class="badge
                                 {% if token.status == 'waiting' %}bg-warning
                                 {% elif token.status == 'in_progress' %}bg-info
                                 {% elif token.status == 'completed' %}bg-success
@@ -119,25 +123,26 @@
                                 {{ token.actual_wait_time|default:"-" }} min
                             {% endif %}
                         </td>
-                        <td>
-                            <form method="post" style="display: inline;">
+                        <td class="text-nowrap">
+                            <form method="post" class="d-inline-flex gap-1">
                                 {% csrf_token %}
                                 <input type="hidden" name="token_id" value="{{ token.id }}">
-                                
+
                                 {% if token.status == 'waiting' %}
                                 <button type="submit" name="action" value="start" class="btn btn-sm btn-success">
-                                    <i class="fas fa-play"></i> Start
+                                    <i class="fas fa-play" aria-hidden="true"></i> Start
                                 </button>
                                 {% elif token.status == 'in_progress' %}
                                 <button type="submit" name="action" value="complete" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-check"></i> Complete
+                                    <i class="fas fa-check" aria-hidden="true"></i> Complete
                                 </button>
                                 {% endif %}
-                                
+
                                 {% if token.status != 'completed' %}
-                                <button type="submit" name="action" value="cancel" class="btn btn-sm btn-danger" 
-                                        onclick="return confirm('Cancel {{ token.token_number }}?')">
-                                    <i class="fas fa-times"></i> Cancel
+                                <button type="submit" name="action" value="cancel"
+                                        class="btn btn-sm btn-danger js-confirm"
+                                        data-confirm-message="Cancel token {{ token.token_number }}?">
+                                    <i class="fas fa-times" aria-hidden="true"></i> Cancel
                                 </button>
                                 {% endif %}
                             </form>
@@ -146,9 +151,9 @@
                     {% empty %}
                     <tr>
                         <td colspan="8" class="text-center py-5">
-                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <i class="fas fa-check-circle fa-3x text-success mb-3" aria-hidden="true"></i>
                             <h5>No active tokens in queue</h5>
-                            <p class="text-muted">All caught up! Great job!</p>
+                            <p class="text-muted mb-0">All caught up! Great job!</p>
                         </td>
                     </tr>
                     {% endfor %}
@@ -159,9 +164,33 @@
 </div>
 
 <script>
-    // Auto-refresh every 30 seconds
-    setTimeout(function() {
-        location.reload();
-    }, 30000);
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.js-confirm').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            const message = button.dataset.confirmMessage || 'Are you sure?';
+            if (!window.confirm(message)) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    const REFRESH_INTERVAL_MS = 30000;
+    let refreshTimer = null;
+
+    const scheduleRefresh = () => {
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => window.location.reload(), REFRESH_INTERVAL_MS);
+    };
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearTimeout(refreshTimer);
+        } else {
+            scheduleRefresh();
+        }
+    });
+
+    scheduleRefresh();
+});
 </script>
 {% endblock %}
