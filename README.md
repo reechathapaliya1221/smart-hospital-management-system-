@@ -1,6 +1,6 @@
 # 🏥 Smart Hospital Queue Management System
 
-An AI-powered hospital queue management system with SMS notifications and mobile app support.
+An AI-powered hospital queue management system with SMS notifications.
 
 ## 📋 Features
 
